@@ -1,1 +1,1 @@
-web: bundle exec jekyll-auth serve
+web: bundle exec jekyll-auth serve -p PORT
