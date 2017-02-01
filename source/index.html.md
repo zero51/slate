@@ -1,189 +1,209 @@
 ---
-title: API Reference
+title: 1MT Authentication API
 
 language_tabs:
-  - shell
-  - ruby
-  - python
-  - javascript
+  - http: HTTP
+  - shell: cURL
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
   - <a href='https://github.com/tripit/slate'>Documentation Powered by Slate</a>
 
 includes:
-  - errors
+  - base
+  - users
 
 search: true
 ---
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
-
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
-
-This example API documentation page was created with [Slate](https://github.com/tripit/slate). Feel free to edit it and use it as a base for your own API's documentation.
+Welcome to the 1MT Authentication API. Use this API to manage the syncing of user authentication data from your MT platform to the 1MT authentication service.
 
 # Authentication
 
-> To authorize, use this code:
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
-
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-```
-
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
+All calls to the API require a valid access token. Once granted (provided they are not revoked), tokens are valid for 12 hours.
 
 <aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+Calls authenticated with invalid credentials will result in a <code>401</code> error.
 </aside>
 
-# Kittens
+## Requesting access tokens
 
-## Get All Kittens
+> Request an access token:
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
+```http
+POST /auth/token HTTP/1.1
+Accept: application/json
+Authorization: Basic Y3ItZWNvbW06YTljZTFhMWYtOWI1ZS00ZDllLTkzYjctN2VmMTBmZWRiZDYz
+Host: accounts.markettrack.com
+User-Agent: PriceVision/1.0.0
 ```
 
 ```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
+curl 
+  -H "Content-Type: application/json" 
+  -X POST /auth/token 
+  -u identifier:secret
+  -d '{"grant_type": "client_credentials"}'
 ```
 
-```javascript
-const kittn = require('kittn');
+> A successful response:
 
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+X-Request-Id: ea49faf8-f7ad-48fa-b72a-e659db0f16e4
 ```
-
-> The above command returns JSON structured like this:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
-```
-
-This endpoint retrieves all kittens.
-
-### HTTP Request
-
-`GET http://example.com/api/kittens`
-
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
-```
-
-> The above command returns JSON structured like this:
 
 ```json
 {
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+	"access_token": "216fee3f-404d-4663-b32a-dcb765020125",
+	"expires_at": "2017-02-01T16:59:20.112Z",
+	"token_type": "Bearer"
 }
 ```
 
-This endpoint retrieves a specific kitten.
+Access tokens are granted at the end of an [OAuth2 client-credentials](https://tools.ietf.org/html/rfc6749#section-4.4) handshake. To request a new token, use [HTTP basic auth](https://tools.ietf.org/html/rfc2617#section-2) with your platform ID and secret to POST to the `/auth/token` endpoint.
 
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
+If the token request is valid and authorised, the access token is returned in the JSON body of the response, along with details of its expiry.
 
-### HTTP Request
+Invalid token requests result in a `401` error. If encountered, check the platform credentials that were supplied.
 
-`GET http://example.com/kittens/<ID>`
+## Using access tokens
 
-### URL Parameters
+> Authenticate a request:
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
+```http
+GET /api/v1 HTTP/1.1
+Accept: application/json
+Authorization: Bearer 216fee3f-404d-4663-b32a-dcb765020125
+Host: accounts.markettrack.com
+User-Agent: PriceVision/1.0.0
+```
 
+```shell
+curl /api/v1 
+  -H "Authorization: Bearer 216fee3f-404d-4663-b32a-dcb765020125"
+```
+
+In possession of a valid access token, you can make requests to the API. Credentials should be passed as [bearer tokens](https://tools.ietf.org/html/rfc6750#section-2.1) in the request header...
+
+`Authorization: Bearer 216fee3f-404d-4663-b32a-dcb765020125`
+
+<aside class="notice">
+Replace <code>216fee3f-404d-4663-b32a-dcb765020125</code> with your access code.
+</aside>
+
+Recall that invalid or expired tokens will result in a `401: Bad Request` error.
+
+# Using the API
+
+## Status codes
+
+The 1MT Authentication API uses the following status codes:
+
+Code | Meaning
+---- | -------
+[200](https://httpstatuses.com/200) | OK: the request succeeded
+[201](https://httpstatuses.com/201) | Created: one or more resources created
+[204](https://httpstatuses.com/204) | No Content: success, but nothing to return
+[400](https://httpstatuses.com/400) | Bad Request: malformed or invalid request
+[401](https://httpstatuses.com/401) | Unauthorized: the access token is invalid
+[403](https://httpstatuses.com/403) | Forbidden: insufficient permissions
+[404](https://httpstatuses.com/404) | Not Found: the requested resource could not be found
+[406](https://httpstatuses.com/406) | Not Acceptable: a format was requested that isn't JSON
+[410](https://httpstatuses.com/410) | Gone: the requested resource has been removed
+[415](https://httpstatuses.com/415) | Unsupported Media Type: the request's payload is not JSON
+[422](https://httpstatuses.com/422) | Unprocessable Entity: validation failed
+[500](https://httpstatuses.com/500) | Internal Server Error: unexpected API error
+[503](https://httpstatuses.com/503) | Service Unavailable: API temporarily offline
+
+## Making requests
+
+All requests to the API should be over HTTPS.
+
+### HTTP verbs
+
+The API uses RESTful design patterns. As such, it implements the following HTTP verbs:
+
+Verb | Meaning
+---- | -------
+GET | Read resource(s)
+POST | Create new resource
+PATCH | Modify existing resource
+DELETE | Remove resource
+
+### Content type
+
+When making requests, ensure that the `Accept` header is set to `application/json` and, when relevant, make sure that the `Content-Type` is also set to `application/json`.
+
+### User agent
+
+Set the user agent according to the platform name and current version.
+
+`User-Agent: PriceVision/1.0.0`
+
+## Responses
+
+> A successful response:
+
+```json
+{
+  "succeeded": true,
+  "message": "User created: me@here.com",
+  "data": {
+    "name": "Me",
+    "email": "me@here.com"
+  }
+}
+```
+
+> An unsuccessful response:
+
+```json 
+{
+  "succeeded": false,
+  "message": "RAML validation error",
+  "data": {
+    "fields": [{
+      "field": "firstName",
+      "value": "null",
+      "msg": "invalid json (required, true)"
+    }]
+  }
+}
+```
+
+Outside of [authentication](#authentication), all API responses have a similar JSON payload. 
+
+Key | Type | Description
+--- | ---- | -----------
+succeeded | boolean | Whether or not the request was successful
+message | string | A short description of the response
+data | object | An optional object describing the result in detail
+
+### Errors
+
+Unsuccessful responses can include details on the error in the `data` object. For example, a validation error would include each invalid field and describe why the validation failed.
+
+### Request ID
+
+Each request to the API is given a unique request ID. This is passed back in the response via the `X-Request-Id` header...
+
+`x-Request-Id: ea49faf8-f7ad-48fa-b72a-e659db0f16e4`
+
+If you want to pass on your own request ID as part of a communication chain, then supply a similar header in the request. When such a header is identified, the API will not create a new ID, but will instead pass back the supplied ID in the response.
+
+## Fields
+
+### IDs
+
+All resource IDs are represented in [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) format...
+
+`"id": "4a8e9a36-c902-42c5-bbd6-19d222acf178"`
+
+### Timestamps
+
+All timestamps are returned in [ISO8601](https://www.w3.org/TR/NOTE-datetime) format, in UTC, with fields ending in the postfix *_at*...
+
+`"created_at": "2016-12-01T00:55:47Z"`
