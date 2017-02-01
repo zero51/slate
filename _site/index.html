@@ -1,0 +1,576 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>1MT Authentication API</title>
+
+    <style>
+      .highlight table td { padding: 5px; }
+.highlight table pre { margin: 0; }
+.highlight, .highlight .w {
+  color: #f8f8f2;
+  background-color: #272822;
+}
+.highlight .err {
+  color: #272822;
+  background-color: #f92672;
+}
+.highlight .c, .highlight .cd, .highlight .cm, .highlight .c1, .highlight .cs {
+  color: #75715e;
+}
+.highlight .cp {
+  color: #f4bf75;
+}
+.highlight .nt {
+  color: #f4bf75;
+}
+.highlight .o, .highlight .ow {
+  color: #f8f8f2;
+}
+.highlight .p, .highlight .pi {
+  color: #f8f8f2;
+}
+.highlight .gi {
+  color: #a6e22e;
+}
+.highlight .gd {
+  color: #f92672;
+}
+.highlight .gh {
+  color: #66d9ef;
+  background-color: #272822;
+  font-weight: bold;
+}
+.highlight .k, .highlight .kn, .highlight .kp, .highlight .kr, .highlight .kv {
+  color: #ae81ff;
+}
+.highlight .kc {
+  color: #fd971f;
+}
+.highlight .kt {
+  color: #fd971f;
+}
+.highlight .kd {
+  color: #fd971f;
+}
+.highlight .s, .highlight .sb, .highlight .sc, .highlight .sd, .highlight .s2, .highlight .sh, .highlight .sx, .highlight .s1 {
+  color: #a6e22e;
+}
+.highlight .sr {
+  color: #a1efe4;
+}
+.highlight .si {
+  color: #cc6633;
+}
+.highlight .se {
+  color: #cc6633;
+}
+.highlight .nn {
+  color: #f4bf75;
+}
+.highlight .nc {
+  color: #f4bf75;
+}
+.highlight .no {
+  color: #f4bf75;
+}
+.highlight .na {
+  color: #66d9ef;
+}
+.highlight .m, .highlight .mf, .highlight .mh, .highlight .mi, .highlight .il, .highlight .mo, .highlight .mb, .highlight .mx {
+  color: #a6e22e;
+}
+.highlight .ss {
+  color: #a6e22e;
+}
+    </style>
+    <link href="stylesheets/screen.css" rel="stylesheet" media="screen" />
+    <link href="stylesheets/print.css" rel="stylesheet" media="print" />
+      <script src="javascripts/all.js"></script>
+  </head>
+
+  <body class="index" data-languages="[&quot;http&quot;,&quot;shell&quot;]">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="images/navbar.png" alt="Navbar" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+      <img src="images/logo.png" alt="Logo" />
+        <div class="lang-selector">
+              <a href="#" data-language-name="http">HTTP</a>
+              <a href="#" data-language-name="shell">cURL</a>
+        </div>
+        <div class="search">
+          <input type="text" class="search" id="input-search" placeholder="Search">
+        </div>
+        <ul class="search-results"></ul>
+      <div id="toc">
+      </div>
+        <ul class="toc-footer">
+            <li><a href='https://github.com/tripit/slate'>Documentation Powered by Slate</a></li>
+        </ul>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id="introduction">Introduction</h1>
+
+<p>Welcome to the 1MT Authentication API. Use this API to manage the syncing of user authentication data from your MT platform to the 1MT authentication service.</p>
+
+<h1 id="authentication">Authentication</h1>
+
+<p>All calls to the API require a valid access token. Once granted (provided they are not revoked), tokens are valid for 12 hours.</p>
+
+<aside class="notice">
+Calls authenticated with invalid credentials will result in a <code>401</code> error.
+</aside>
+
+<h2 id="requesting-access-tokens">Requesting access tokens</h2>
+
+<blockquote>
+<p>Request an access token:</p>
+</blockquote>
+<pre class="highlight http"><code><span class="nf">POST</span> <span class="nn">/auth/token</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/json</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">Basic Y3ItZWNvbW06YTljZTFhMWYtOWI1ZS00ZDllLTkzYjctN2VmMTBmZWRiZDYz</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">accounts.markettrack.com</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">PriceVision/1.0.0</span>
+</code></pre><pre class="highlight shell"><code>curl 
+  -H <span class="s2">"Content-Type: application/json"</span> 
+  -X POST /auth/token 
+  -u identifier:secret
+  -d <span class="s1">'{"grant_type": "client_credentials"}'</span>
+</code></pre>
+<blockquote>
+<p>A successful response:</p>
+</blockquote>
+<pre class="highlight http"><code><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+<span class="na">X-Request-Id</span><span class="p">:</span> <span class="s">ea49faf8-f7ad-48fa-b72a-e659db0f16e4</span>
+</code></pre><pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"access_token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"216fee3f-404d-4663-b32a-dcb765020125"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"expires_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2017-02-01T16:59:20.112Z"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"token_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Bearer"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<p>Access tokens are granted at the end of an <a href="https://tools.ietf.org/html/rfc6749#section-4.4">OAuth2 client-credentials</a> handshake. To request a new token, use <a href="https://tools.ietf.org/html/rfc2617#section-2">HTTP basic auth</a> with your platform ID and secret to POST to the <code class="prettyprint">/auth/token</code> endpoint.</p>
+
+<p>If the token request is valid and authorised, the access token is returned in the JSON body of the response, along with details of its expiry.</p>
+
+<p>Invalid token requests result in a <code class="prettyprint">401</code> error. If encountered, check the platform credentials that were supplied.</p>
+
+<h2 id="using-access-tokens">Using access tokens</h2>
+
+<blockquote>
+<p>Authenticate a request:</p>
+</blockquote>
+<pre class="highlight http"><code><span class="nf">GET</span> <span class="nn">/api/v1</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/json</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">Bearer 216fee3f-404d-4663-b32a-dcb765020125</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">accounts.markettrack.com</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">PriceVision/1.0.0</span>
+</code></pre><pre class="highlight shell"><code>curl /api/v1 
+  -H <span class="s2">"Authorization: Bearer 216fee3f-404d-4663-b32a-dcb765020125"</span>
+</code></pre>
+<p>In possession of a valid access token, you can make requests to the API. Credentials should be passed as <a href="https://tools.ietf.org/html/rfc6750#section-2.1">bearer tokens</a> in the request header&hellip;</p>
+
+<p><code class="prettyprint">Authorization: Bearer 216fee3f-404d-4663-b32a-dcb765020125</code></p>
+
+<aside class="notice">
+Replace <code>216fee3f-404d-4663-b32a-dcb765020125</code> with your access code.
+</aside>
+
+<p>Recall that invalid or expired tokens will result in a <code class="prettyprint">401: Bad Request</code> error.</p>
+
+<h1 id="using-the-api">Using the API</h1>
+
+<h2 id="status-codes">Status codes</h2>
+
+<p>The 1MT Authentication API uses the following status codes:</p>
+
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Meaning</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><a href="https://httpstatuses.com/200">200</a></td>
+<td>OK: the request succeeded</td>
+</tr>
+<tr>
+<td><a href="https://httpstatuses.com/201">201</a></td>
+<td>Created: one or more resources created</td>
+</tr>
+<tr>
+<td><a href="https://httpstatuses.com/204">204</a></td>
+<td>No Content: success, but nothing to return</td>
+</tr>
+<tr>
+<td><a href="https://httpstatuses.com/400">400</a></td>
+<td>Bad Request: malformed or invalid request</td>
+</tr>
+<tr>
+<td><a href="https://httpstatuses.com/401">401</a></td>
+<td>Unauthorized: the access token is invalid</td>
+</tr>
+<tr>
+<td><a href="https://httpstatuses.com/403">403</a></td>
+<td>Forbidden: insufficient permissions</td>
+</tr>
+<tr>
+<td><a href="https://httpstatuses.com/404">404</a></td>
+<td>Not Found: the requested resource could not be found</td>
+</tr>
+<tr>
+<td><a href="https://httpstatuses.com/406">406</a></td>
+<td>Not Acceptable: a format was requested that isn&rsquo;t JSON</td>
+</tr>
+<tr>
+<td><a href="https://httpstatuses.com/410">410</a></td>
+<td>Gone: the requested resource has been removed</td>
+</tr>
+<tr>
+<td><a href="https://httpstatuses.com/415">415</a></td>
+<td>Unsupported Media Type: the request&rsquo;s payload is not JSON</td>
+</tr>
+<tr>
+<td><a href="https://httpstatuses.com/422">422</a></td>
+<td>Unprocessable Entity: validation failed</td>
+</tr>
+<tr>
+<td><a href="https://httpstatuses.com/500">500</a></td>
+<td>Internal Server Error: unexpected API error</td>
+</tr>
+<tr>
+<td><a href="https://httpstatuses.com/503">503</a></td>
+<td>Service Unavailable: API temporarily offline</td>
+</tr>
+</tbody></table>
+
+<h2 id="making-requests">Making requests</h2>
+
+<p>All requests to the API should be over HTTPS.</p>
+
+<h3 id="http-verbs">HTTP verbs</h3>
+
+<p>The API uses RESTful design patterns. As such, it implements the following HTTP verbs:</p>
+
+<table><thead>
+<tr>
+<th>Verb</th>
+<th>Meaning</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>GET</td>
+<td>Read resource(s)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>Create new resource</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td>Modify existing resource</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>Remove resource</td>
+</tr>
+</tbody></table>
+
+<h3 id="content-type">Content type</h3>
+
+<p>When making requests, ensure that the <code class="prettyprint">Accept</code> header is set to <code class="prettyprint">application/json</code> and, when relevant, make sure that the <code class="prettyprint">Content-Type</code> is also set to <code class="prettyprint">application/json</code>.</p>
+
+<h3 id="user-agent">User agent</h3>
+
+<p>Set the user agent according to the platform name and current version.</p>
+
+<p><code class="prettyprint">User-Agent: PriceVision/1.0.0</code></p>
+
+<h2 id="responses">Responses</h2>
+
+<blockquote>
+<p>A successful response:</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"succeeded"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"User created: me@here.com"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Me"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"me@here.com"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<blockquote>
+<p>An unsuccessful response:</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"succeeded"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RAML validation error"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"fields"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w">
+      </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"firstName"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"null"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"invalid json (required, true)"</span><span class="w">
+    </span><span class="p">}]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<p>Outside of <a href="#authentication">authentication</a>, all API responses have a similar JSON payload. </p>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>succeeded</td>
+<td>boolean</td>
+<td>Whether or not the request was successful</td>
+</tr>
+<tr>
+<td>message</td>
+<td>string</td>
+<td>A short description of the response</td>
+</tr>
+<tr>
+<td>data</td>
+<td>object</td>
+<td>An optional object describing the result in detail</td>
+</tr>
+</tbody></table>
+
+<h3 id="errors">Errors</h3>
+
+<p>Unsuccessful responses can include details on the error in the <code class="prettyprint">data</code> object. For example, a validation error would include each invalid field and describe why the validation failed.</p>
+
+<h3 id="request-id">Request ID</h3>
+
+<p>Each request to the API is given a unique request ID. This is passed back in the response via the <code class="prettyprint">X-Request-Id</code> header&hellip;</p>
+
+<p><code class="prettyprint">x-Request-Id: ea49faf8-f7ad-48fa-b72a-e659db0f16e4</code></p>
+
+<p>If you want to pass on your own request ID as part of a communication chain, then supply a similar header in the request. When such a header is identified, the API will not create a new ID, but will instead pass back the supplied ID in the response.</p>
+
+<h2 id="fields">Fields</h2>
+
+<h3 id="ids">IDs</h3>
+
+<p>All resource IDs are represented in <a href="https://en.wikipedia.org/wiki/Universally_unique_identifier">UUID</a> format&hellip;</p>
+
+<p><code class="prettyprint">&quot;id&quot;: &quot;4a8e9a36-c902-42c5-bbd6-19d222acf178&quot;</code></p>
+
+<h3 id="timestamps">Timestamps</h3>
+
+<p>All timestamps are returned in <a href="https://www.w3.org/TR/NOTE-datetime">ISO8601</a> format, in UTC, with fields ending in the postfix <em>_at</em>&hellip;</p>
+
+<p><code class="prettyprint">&quot;created_at&quot;: &quot;2016-12-01T00:55:47Z&quot;</code></p>
+
+          <h1 id="base-api">Base API</h1>
+
+<p>Available at <code class="prettyprint">/api/v1</code>.</p>
+
+<h2 id="hello">Hello</h2>
+
+<blockquote>
+<p>Check API status:</p>
+</blockquote>
+<pre class="highlight http"><code><span class="nf">GET</span> <span class="nn">/api/v1</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/json</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">Bearer Y3ItZWNvbW06YTljZTFhMWYtOWI1ZS00ZDllLTkzYjctN2VmMTBmZWRiZDYz</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">accounts.markettrack.com</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">PriceVision/1.0.0</span>
+</code></pre><pre class="highlight shell"><code>curl /api/v1
+  -H <span class="s2">"Authorization: Bearer 216fee3f-404d-4663-b32a-dcb765020125"</span>
+</code></pre>
+<blockquote>
+<p>A successful response:</p>
+</blockquote>
+<pre class="highlight http"><code><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+<span class="na">X-Request-Id</span><span class="p">:</span> <span class="s">ea49faf8-f7ad-48fa-b72a-e659db0f16e4</span>
+</code></pre><pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"succeeded"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Hello from 1MT resource server"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<p>Check status of API.</p>
+
+<h3 id="http-request">HTTP request</h3>
+
+<p><code class="prettyprint">GET https://accounts.markettrack.com/api/v1</code></p>
+
+          <h1 id="users-api">Users API</h1>
+
+<p>Available at <code class="prettyprint">/api/v1/users</code>.</p>
+
+<h2 id="user-resource">User resource</h2>
+
+<blockquote>
+<p>Example user payload:</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"da2d3e9a-e84e-11e6-bf01-fe55135034f3"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"First"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Last"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"me@here.com"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"internal"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-12-01T00:55:47Z"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-12-01T00:55:47Z"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"subscription"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"f5e9dc78-e84f-11e6-bf01-fe55135034f3"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-12-01T00:55:47Z"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-12-01T00:55:47Z"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"accounts"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w">
+      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"identifier"</span><span class="p">:</span><span class="w"> </span><span class="s2">"f9a5b170-e84f-11e6-bf01-fe55135034f3"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-12-01T00:55:47Z"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-12-01T00:55:47Z"</span><span class="w">
+    </span><span class="p">}]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>first_name</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>last_name</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>email</td>
+<td>string</td>
+<td>/[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,}/</td>
+</tr>
+<tr>
+<td>status</td>
+<td>string</td>
+<td>One of: active, inactive, pending</td>
+</tr>
+<tr>
+<td>internal</td>
+<td>boolean</td>
+<td>Internal user</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>datetime</td>
+<td></td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>datetime</td>
+<td></td>
+</tr>
+<tr>
+<td>subscription?</td>
+<td>Subscription</td>
+<td>Included if <code class="prettyprint">extended</code> param truthy</td>
+</tr>
+</tbody></table>
+
+<h2 id="get-user">Get user</h2>
+
+<blockquote>
+<p>Get user:</p>
+</blockquote>
+<pre class="highlight http"><code><span class="nf">GET</span> <span class="nn">/api/v1/users/me@here.com</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/json</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">Bearer Y3ItZWNvbW06YTljZTFhMWYtOWI1ZS00ZDllLTkzYjctN2VmMTBmZWRiZDYz</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">accounts.markettrack.com</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">PriceVision/1.0.0</span>
+</code></pre><pre class="highlight shell"><code>curl /api/v1/users/me@here.com
+  -H <span class="s2">"Authorization: Bearer 216fee3f-404d-4663-b32a-dcb765020125"</span>
+</code></pre>
+<blockquote>
+<p>A successful response:</p>
+</blockquote>
+<pre class="highlight http"><code><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+<span class="na">X-Request-Id</span><span class="p">:</span> <span class="s">ea49faf8-f7ad-48fa-b72a-e659db0f16e4</span>
+</code></pre><pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"succeeded"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"User found: me@here.com"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"as"</span><span class="p">:</span><span class="w"> </span><span class="s2">"above"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<p>Get details of specific user.</p>
+
+<h3 id="http-request">HTTP request</h3>
+
+<p><code class="prettyprint">GET https://accounts.markettrack.com/api/v1/users/:identifier</code></p>
+
+<h3 id="url-parameters">URL parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>identifier</td>
+<td>string</td>
+<td>Email or ID of user</td>
+</tr>
+</tbody></table>
+
+<h3 id="query-parameters">Query parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>extended</td>
+<td>boolean</td>
+<td>true</td>
+<td>If truthy, include subscription details</td>
+</tr>
+</tbody></table>
+
+<h2 id="create-user">Create user</h2>
+
+<h2 id="update-user">Update user</h2>
+
+<h2 id="delete-user">Delete user</h2>
+
+      </div>
+      <div class="dark-box">
+          <div class="lang-selector">
+                <a href="#" data-language-name="http">HTTP</a>
+                <a href="#" data-language-name="shell">cURL</a>
+          </div>
+      </div>
+    </div>
+  </body>
+</html>
