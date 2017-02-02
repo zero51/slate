@@ -121,6 +121,10 @@
 
 <p>Welcome to the 1MT Authentication API. Use this API to manage the syncing of user authentication data from your MT platform to the 1MT authentication service.</p>
 
+<aside class="notice">
+The service can be found at: <code>https://id.markettrack.com</code>.
+</aside>
+
 <h1 id="authentication">Authentication</h1>
 
 <p>All calls to the API require a valid access token. Once granted (provided they are not revoked), tokens are valid for 12 hours.</p>
@@ -137,11 +141,16 @@ Calls authenticated with invalid credentials will result in a <code>401</code> e
 <pre class="highlight http"><code><span class="nf">POST</span> <span class="nn">/auth/token</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Accept</span><span class="p">:</span> <span class="s">application/json</span>
 <span class="na">Authorization</span><span class="p">:</span> <span class="s">Basic Y3ItZWNvbW06YTljZTFhMWYtOWI1ZS00ZDllLTkzYjctN2VmMTBmZWRiZDYz</span>
-<span class="na">Host</span><span class="p">:</span> <span class="s">accounts.markettrack.com</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">id.markettrack.com</span>
 <span class="na">User-Agent</span><span class="p">:</span> <span class="s">PriceVision/1.0.0</span>
-</code></pre><pre class="highlight shell"><code>curl 
+
+<span class="p">{</span><span class="w">
+  </span><span class="nt">"grant_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"client_credentials"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre><pre class="highlight shell"><code>curl /auth/token 
   -H <span class="s2">"Content-Type: application/json"</span> 
-  -X POST /auth/token 
+  -X POST 
   -u identifier:secret
   -d <span class="s1">'{"grant_type": "client_credentials"}'</span>
 </code></pre>
@@ -171,7 +180,7 @@ Calls authenticated with invalid credentials will result in a <code>401</code> e
 <pre class="highlight http"><code><span class="nf">GET</span> <span class="nn">/api/v1</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Accept</span><span class="p">:</span> <span class="s">application/json</span>
 <span class="na">Authorization</span><span class="p">:</span> <span class="s">Bearer 216fee3f-404d-4663-b32a-dcb765020125</span>
-<span class="na">Host</span><span class="p">:</span> <span class="s">accounts.markettrack.com</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">id.markettrack.com</span>
 <span class="na">User-Agent</span><span class="p">:</span> <span class="s">PriceVision/1.0.0</span>
 </code></pre><pre class="highlight shell"><code>curl /api/v1 
   -H <span class="s2">"Authorization: Bearer 216fee3f-404d-4663-b32a-dcb765020125"</span>
@@ -195,7 +204,7 @@ Replace <code>216fee3f-404d-4663-b32a-dcb765020125</code> with your access code.
 <table><thead>
 <tr>
 <th>Code</th>
-<th>Meaning</th>
+<th>Description</th>
 </tr>
 </thead><tbody>
 <tr>
@@ -256,6 +265,10 @@ Replace <code>216fee3f-404d-4663-b32a-dcb765020125</code> with your access code.
 
 <p>All requests to the API should be over HTTPS.</p>
 
+<aside class="notice">
+The API can be found at: <code>https://id.markettrack.com/api/v1</code>.
+</aside>
+
 <h3 id="http-verbs">HTTP verbs</h3>
 
 <p>The API uses RESTful design patterns. As such, it implements the following HTTP verbs:</p>
@@ -263,7 +276,7 @@ Replace <code>216fee3f-404d-4663-b32a-dcb765020125</code> with your access code.
 <table><thead>
 <tr>
 <th>Verb</th>
-<th>Meaning</th>
+<th>Description</th>
 </tr>
 </thead><tbody>
 <tr>
@@ -387,7 +400,7 @@ Replace <code>216fee3f-404d-4663-b32a-dcb765020125</code> with your access code.
 <pre class="highlight http"><code><span class="nf">GET</span> <span class="nn">/api/v1</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Accept</span><span class="p">:</span> <span class="s">application/json</span>
 <span class="na">Authorization</span><span class="p">:</span> <span class="s">Bearer Y3ItZWNvbW06YTljZTFhMWYtOWI1ZS00ZDllLTkzYjctN2VmMTBmZWRiZDYz</span>
-<span class="na">Host</span><span class="p">:</span> <span class="s">accounts.markettrack.com</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">id.markettrack.com</span>
 <span class="na">User-Agent</span><span class="p">:</span> <span class="s">PriceVision/1.0.0</span>
 </code></pre><pre class="highlight shell"><code>curl /api/v1
   -H <span class="s2">"Authorization: Bearer 216fee3f-404d-4663-b32a-dcb765020125"</span>
@@ -407,7 +420,7 @@ Replace <code>216fee3f-404d-4663-b32a-dcb765020125</code> with your access code.
 
 <h3 id="http-request">HTTP request</h3>
 
-<p><code class="prettyprint">GET https://accounts.markettrack.com/api/v1</code></p>
+<p><code class="prettyprint">GET https://id.markettrack.com/api/v1</code></p>
 
           <h1 id="users-api">Users API</h1>
 
@@ -433,8 +446,8 @@ Replace <code>216fee3f-404d-4663-b32a-dcb765020125</code> with your access code.
     </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-12-01T00:55:47Z"</span><span class="p">,</span><span class="w">
     </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-12-01T00:55:47Z"</span><span class="p">,</span><span class="w">
     </span><span class="nt">"accounts"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w">
-      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"identifier"</span><span class="p">:</span><span class="w"> </span><span class="s2">"f9a5b170-e84f-11e6-bf01-fe55135034f3"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"f9a5b170-e84f-11e6-bf01-fe55135034f3"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"identifier"</span><span class="p">:</span><span class="w"> </span><span class="s2">"me@here.com"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-12-01T00:55:47Z"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-12-01T00:55:47Z"</span><span class="w">
@@ -449,6 +462,11 @@ Replace <code>216fee3f-404d-4663-b32a-dcb765020125</code> with your access code.
 <th>Description</th>
 </tr>
 </thead><tbody>
+<tr>
+<td>id</td>
+<td>string</td>
+<td>User ID</td>
+</tr>
 <tr>
 <td>first_name</td>
 <td>string</td>
@@ -472,7 +490,7 @@ Replace <code>216fee3f-404d-4663-b32a-dcb765020125</code> with your access code.
 <tr>
 <td>internal</td>
 <td>boolean</td>
-<td>Internal user</td>
+<td>Internal user?</td>
 </tr>
 <tr>
 <td>created_at</td>
@@ -485,9 +503,92 @@ Replace <code>216fee3f-404d-4663-b32a-dcb765020125</code> with your access code.
 <td></td>
 </tr>
 <tr>
-<td>subscription?</td>
-<td>Subscription</td>
-<td>Included if <code class="prettyprint">extended</code> param truthy</td>
+<td>subscription</td>
+<td><a href="#subscription-resource">Subscription</a></td>
+<td>User&rsquo;s subscription to current platform</td>
+</tr>
+</tbody></table>
+
+<h2 id="create-user">Create user</h2>
+
+<blockquote>
+<p>Create user:</p>
+</blockquote>
+<pre class="highlight http"><code><span class="nf">POST</span> <span class="nn">/api/v1/users</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/json</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">Bearer Y3ItZWNvbW06YTljZTFhMWYtOWI1ZS00ZDllLTkzYjctN2VmMTBmZWRiZDYz</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">id.markettrack.com</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">PriceVision/1.0.0</span>
+
+<span class="p">{</span><span class="w">
+  </span><span class="nt">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"First"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Last"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"me@here.com"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre><pre class="highlight shell"><code>curl /api/v1/users
+  -H <span class="s2">"Authorization: Bearer 216fee3f-404d-4663-b32a-dcb765020125"</span>
+  -H <span class="s2">"Content-Type: application/json"</span>   
+  -X POST 
+  -d <span class="s1">'{"first_name": "First", "last_name": "Last", "email": "me@here.com"}'</span>
+</code></pre>
+<blockquote>
+<p>A successful response:</p>
+</blockquote>
+<pre class="highlight http"><code><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+<span class="na">X-Request-Id</span><span class="p">:</span> <span class="s">ea49faf8-f7ad-48fa-b72a-e659db0f16e4</span>
+</code></pre><pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"succeeded"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"User created: da2d3e9a-e84e-11e6-bf01-fe55135034f3"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"user"</span><span class="p">:</span><span class="w"> </span><span class="s2">"payload"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<p>Create a new user (and optionally a subscription and account). </p>
+
+<p><strong>Note.</strong> New users are initially in a &lsquo;pending&rsquo; state.</p>
+
+<p><strong>Note.</strong> If an account identifier is given, a subscription is also created.</p>
+
+<h3 id="http-request">HTTP request</h3>
+
+<p><code class="prettyprint">POST https://id.markettrack.com/api/v1/users</code></p>
+
+<h3 id="body-parameters">Body parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>first_name</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>last_name</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>email</td>
+<td>string</td>
+<td></td>
+</tr>
+<tr>
+<td>internal?</td>
+<td>boolean</td>
+<td>false</td>
+</tr>
+<tr>
+<td>account.identifier?</td>
+<td>string</td>
+<td>null</td>
 </tr>
 </tbody></table>
 
@@ -499,9 +600,16 @@ Replace <code>216fee3f-404d-4663-b32a-dcb765020125</code> with your access code.
 <pre class="highlight http"><code><span class="nf">GET</span> <span class="nn">/api/v1/users/me@here.com</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Accept</span><span class="p">:</span> <span class="s">application/json</span>
 <span class="na">Authorization</span><span class="p">:</span> <span class="s">Bearer Y3ItZWNvbW06YTljZTFhMWYtOWI1ZS00ZDllLTkzYjctN2VmMTBmZWRiZDYz</span>
-<span class="na">Host</span><span class="p">:</span> <span class="s">accounts.markettrack.com</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">id.markettrack.com</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">PriceVision/1.0.0</span>
+</code></pre><pre class="highlight http"><code><span class="nf">GET</span> <span class="nn">/api/v1/users/da2d3e9a-e84e-11e6-bf01-fe55135034f3</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">application/json</span>
+<span class="na">Authorization</span><span class="p">:</span> <span class="s">Bearer Y3ItZWNvbW06YTljZTFhMWYtOWI1ZS00ZDllLTkzYjctN2VmMTBmZWRiZDYz</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">id.markettrack.com</span>
 <span class="na">User-Agent</span><span class="p">:</span> <span class="s">PriceVision/1.0.0</span>
 </code></pre><pre class="highlight shell"><code>curl /api/v1/users/me@here.com
+  -H <span class="s2">"Authorization: Bearer 216fee3f-404d-4663-b32a-dcb765020125"</span>
+</code></pre><pre class="highlight shell"><code>curl /api/v1/users/da2d3e9a-e84e-11e6-bf01-fe55135034f3
   -H <span class="s2">"Authorization: Bearer 216fee3f-404d-4663-b32a-dcb765020125"</span>
 </code></pre>
 <blockquote>
@@ -514,15 +622,15 @@ Replace <code>216fee3f-404d-4663-b32a-dcb765020125</code> with your access code.
   </span><span class="nt">"succeeded"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
   </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"User found: me@here.com"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"as"</span><span class="p">:</span><span class="w"> </span><span class="s2">"above"</span><span class="w">
+    </span><span class="nt">"user"</span><span class="p">:</span><span class="w"> </span><span class="s2">"payload"</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
-<p>Get details of specific user.</p>
+<p>Get details of a specific user.</p>
 
 <h3 id="http-request">HTTP request</h3>
 
-<p><code class="prettyprint">GET https://accounts.markettrack.com/api/v1/users/:identifier</code></p>
+<p><code class="prettyprint">GET https://id.markettrack.com/api/v1/users/:identifier</code></p>
 
 <h3 id="url-parameters">URL parameters</h3>
 
@@ -540,29 +648,84 @@ Replace <code>216fee3f-404d-4663-b32a-dcb765020125</code> with your access code.
 </tr>
 </tbody></table>
 
-<h3 id="query-parameters">Query parameters</h3>
+<h2 id="update-user">Update user</h2>
+
+<p>Update an existing user. </p>
+
+<p><strong>Note.</strong> Only &#39;safe&rsquo; user fields such as first and last name can be updated.</p>
+
+<p><strong>Note.</strong> At least one body parameter is required.</p>
+
+<h3 id="http-request">HTTP request</h3>
+
+<p><code class="prettyprint">PATCH https://id.markettrack.com/api/v1/users/:identifier</code></p>
+
+<h3 id="url-parameters">URL parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>identifier</td>
+<td>string</td>
+<td>Email or ID of user</td>
+</tr>
+</tbody></table>
+
+<h3 id="body-parameters">Body parameters</h3>
 
 <table><thead>
 <tr>
 <th>Parameter</th>
 <th>Type</th>
 <th>Default</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>first_name?</td>
+<td>string</td>
+<td>null</td>
+</tr>
+<tr>
+<td>last_name?</td>
+<td>string</td>
+<td>null</td>
+</tr>
+</tbody></table>
+
+<h2 id="delete-user">Delete user</h2>
+
+<p>Delete an existing user.</p>
+
+<p><strong>Note.</strong> The operation will fail if the user is subscribed to other platforms.</p>
+
+<h3 id="http-request">HTTP request</h3>
+
+<p><code class="prettyprint">DELETE https://id.markettrack.com/api/v1/users/:identifier</code></p>
+
+<h3 id="url-parameters">URL parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead><tbody>
 <tr>
-<td>extended</td>
-<td>boolean</td>
-<td>true</td>
-<td>If truthy, include subscription details</td>
+<td>identifier</td>
+<td>string</td>
+<td>Email or ID of user</td>
 </tr>
 </tbody></table>
 
-<h2 id="create-user">Create user</h2>
+          <h1 id="subscriptions-api">Subscriptions API</h1>
 
-<h2 id="update-user">Update user</h2>
-
-<h2 id="delete-user">Delete user</h2>
+<p>Available at <code class="prettyprint">/api/v1/subscriptions</code>.</p>
 
       </div>
       <div class="dark-box">
