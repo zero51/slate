@@ -11,6 +11,7 @@ toc_footers:
 includes:
   - base
   - users
+  - subscriptions
 
 search: true
 ---
@@ -18,6 +19,10 @@ search: true
 # Introduction
 
 Welcome to the 1MT Authentication API. Use this API to manage the syncing of user authentication data from your MT platform to the 1MT authentication service.
+
+<aside class="notice">
+The service can be found at: <code>https://id.markettrack.com</code>.
+</aside>
 
 # Authentication
 
@@ -35,14 +40,19 @@ Calls authenticated with invalid credentials will result in a <code>401</code> e
 POST /auth/token HTTP/1.1
 Accept: application/json
 Authorization: Basic Y3ItZWNvbW06YTljZTFhMWYtOWI1ZS00ZDllLTkzYjctN2VmMTBmZWRiZDYz
-Host: accounts.markettrack.com
+Content-Type: application/json
+Host: id.markettrack.com
 User-Agent: PriceVision/1.0.0
+
+{
+  "grant_type": "client_credentials"
+}
 ```
 
 ```shell
-curl 
+curl /auth/token 
   -H "Content-Type: application/json" 
-  -X POST /auth/token 
+  -X POST 
   -u identifier:secret
   -d '{"grant_type": "client_credentials"}'
 ```
@@ -77,7 +87,7 @@ Invalid token requests result in a `401` error. If encountered, check the platfo
 GET /api/v1 HTTP/1.1
 Accept: application/json
 Authorization: Bearer 216fee3f-404d-4663-b32a-dcb765020125
-Host: accounts.markettrack.com
+Host: id.markettrack.com
 User-Agent: PriceVision/1.0.0
 ```
 
@@ -102,8 +112,8 @@ Recall that invalid or expired tokens will result in a `401: Bad Request` error.
 
 The 1MT Authentication API uses the following status codes:
 
-Code | Meaning
----- | -------
+Code | Description
+---- | -----------
 [200](https://httpstatuses.com/200) | OK: the request succeeded
 [201](https://httpstatuses.com/201) | Created: one or more resources created
 [204](https://httpstatuses.com/204) | No Content: success, but nothing to return
@@ -122,12 +132,16 @@ Code | Meaning
 
 All requests to the API should be over HTTPS.
 
+<aside class="notice">
+The API can be found at: <code>https://id.markettrack.com/api/v1</code>.
+</aside>
+
 ### HTTP verbs
 
 The API uses RESTful design patterns. As such, it implements the following HTTP verbs:
 
-Verb | Meaning
----- | -------
+Verb | Description
+---- | -----------
 GET | Read resource(s)
 POST | Create new resource
 PATCH | Modify existing resource

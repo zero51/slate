@@ -10,7 +10,7 @@ Available at `/api/v1`.
 GET /api/v1 HTTP/1.1
 Accept: application/json
 Authorization: Bearer Y3ItZWNvbW06YTljZTFhMWYtOWI1ZS00ZDllLTkzYjctN2VmMTBmZWRiZDYz
-Host: accounts.markettrack.com
+Host: id.markettrack.com
 User-Agent: PriceVision/1.0.0
 ```
 
@@ -38,4 +38,4 @@ Check status of API.
 
 ### HTTP request
 
-`GET https://accounts.markettrack.com/api/v1`
+`GET https://id.markettrack.com/api/v1`
