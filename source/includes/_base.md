@@ -38,4 +38,4 @@ Check status of API.
 
 ### HTTP request
 
-`GET https://id.markettrack.com/api/v1`
+`GET /api/v1`

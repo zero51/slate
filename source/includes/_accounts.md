@@ -1,66 +1,55 @@
-# Subscriptions API
+# Accounts API
 
-A subscription defines a user's ability to access a platform. A user can have multiple subscriptions, but can only have one to each platform. If a user has more than one subscription, one of them can be flagged as being the default one.
+Available at `/api/v1/users/:userIdentifier/accounts`.
 
-Available at `/api/v1/users/:userIdentifier/subscription`.
+## Account resource
 
-## Subscription resource
-
-> Example subscription payload:
+> Example account payload:
 
 ```json
 {
-	"id": "f5e9dc78-e84f-11e6-bf01-fe55135034f3",
+	"id": "f9a5b170-e84f-11e6-bf01-fe55135034f3",
+	"identifier": "fred",
+	"name": "Fred's account",
 	"status": "active",
 	"default": false,
 	"createdAt": "2016-12-01T00:55:47Z",
-	"updatedAt": "2016-12-01T00:55:47Z",
-	"accounts": [{
-		"id": "f9a5b170-e84f-11e6-bf01-fe55135034f3",
-		"identifier": "fred",
-		"name": "Fred's account",
-		"status": "active",
-		"default": false,
-		"createdAt": "2016-12-01T00:55:47Z",
-		"updatedAt": "2016-12-01T00:55:47Z"
-	}]
+	"updatedAt": "2016-12-01T00:55:47Z"
 }
 ```
 
 Attribute | Type | Description
 --------- | ---- | -----------
 id | string | Subscription ID
+identifier | string | Unique account identifier (e.g. username)
 status | string | One of: active, inactive
-default | boolean | Default subscription?
+default | boolean | Default account?
 createdAt | datetime
 updatedAt | datetime
-accounts | [Account](#account-resource)[] | Accounts associated to the subscription
 
-<aside class="notice">
-A user can only have one subscription per platform.
-</aside>
+## Create account
 
-## Create subscription
-
-> Create subscription:
+> Create account:
 
 ```http
-POST /api/v1/users/fred@bedrock.com/subscription HTTP/1.1
+POST /api/v1/users/fred@bedrock.com/accounts HTTP/1.1
 Accept: application/json
 Authorization: Bearer Y3ItZWNvbW06YTljZTFhMWYtOWI1ZS00ZDllLTkzYjctN2VmMTBmZWRiZDYz
 Content-Type: application/json
 Host: id.markettrack.com
 User-Agent: PriceVision/1.0.0
 
-{}
+{
+  "identifier": "fred"
+}
 ```
 
 ```shell
-curl /api/v1/users/fred@bedrock.com/subscription
+curl /api/v1/users/fred@bedrock.com/accounts
   -H "Authorization: Bearer 216fee3f-404d-4663-b32a-dcb765020125"
   -H "Content-Type: application/json"   
   -X POST 
-  -d '{}'
+  -d '{"identifier": "fred"}'
 ```
 
 > A successful response:
@@ -74,22 +63,21 @@ X-Request-Id: ea49faf8-f7ad-48fa-b72a-e659db0f16e4
 ```json
 {
   "succeeded": true,
-  "message": "Subscription created: f5e9dc78-e84f-11e6-bf01-fe55135034f3",
+  "message": "Account created: f9a5b170-e84f-11e6-bf01-fe55135034f3",
   "data": {
-    "subscription": "payload"
+    "account": "payload"
   }
 }
 ```
 
-Create a new subscription (and optionally an associated account). 
+Create a new account. 
 
-**Notes**  
-If an account identifier is given, an accompanying account is also created.  
-A user can only have one default subscription.
+**Note**  
+A subscription can only have one default account.
 
 ### HTTP request
 
-`POST /api/v1/users/:userIdentifier/subscription`
+`POST /api/v1/users/:userIdentifier/accounts`
 
 ### URL parameters
 
@@ -101,15 +89,16 @@ userIdentifier | string | Email or ID of user
 
 Parameter | Type | Default
 --------- | ---- | -------
-default | boolean | false
-account.identifier? | string | null
+identifier | string
+name? | string 
+default? | boolean | false
 
-## Get subscription
+## Get accounts
 
-> Get subscription:
+> Get accounts:
 
 ```http
-GET /api/v1/users/fred@bedrock.com/subscription HTTP/1.1
+GET /api/v1/users/fred@bedrock.com/accounts HTTP/1.1
 Accept: application/json
 Authorization: Bearer Y3ItZWNvbW06YTljZTFhMWYtOWI1ZS00ZDllLTkzYjctN2VmMTBmZWRiZDYz
 Host: id.markettrack.com
@@ -117,7 +106,7 @@ User-Agent: PriceVision/1.0.0
 ```
 
 ```shell
-curl /api/v1/users/fred@bedrock.com/subscription
+curl /api/v1/users/fred@bedrock.com/accounts
   -H "Authorization: Bearer 216fee3f-404d-4663-b32a-dcb765020125"
 ```
 
@@ -132,18 +121,20 @@ X-Request-Id: ea49faf8-f7ad-48fa-b72a-e659db0f16e4
 ```json
 {
   "succeeded": true,
-  "message": "Subscription found: f5e9dc78-e84f-11e6-bf01-fe55135034f3",
-  "data": {
-    "subscription": "payload"
-  }
+  "message": "Accounts found: 2",
+  "data": [{
+    "account": "payload"
+  }, {
+    "account": "payload"
+  }]
 }
 ```
 
-Get details of the subscription associated to the given user and platform.
+Get details of all accounts belonging to the given subscription.
 
 ### HTTP request
 
-`GET /api/v1/users/:userIdentifier/subscription`
+`GET /api/v1/users/:userIdentifier/accounts`
 
 ### URL parameters
 
@@ -151,12 +142,60 @@ Parameter | Type | Description
 --------- | ---- | -----------
 userIdentifier | string | Email or ID of user
 
-## Update subscription
+## Get account
 
-> Update subscription:
+> Get account:
 
 ```http
-PATCH /api/v1/users/fred@bedrock.com/subscription HTTP/1.1
+GET /api/v1/users/fred@bedrock.com/accounts/fred HTTP/1.1
+Accept: application/json
+Authorization: Bearer Y3ItZWNvbW06YTljZTFhMWYtOWI1ZS00ZDllLTkzYjctN2VmMTBmZWRiZDYz
+Host: id.markettrack.com
+User-Agent: PriceVision/1.0.0
+```
+
+```shell
+curl /api/v1/users/fred@bedrock.com/accounts/fred
+  -H "Authorization: Bearer 216fee3f-404d-4663-b32a-dcb765020125"
+```
+
+> A successful response:
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+X-Request-Id: ea49faf8-f7ad-48fa-b72a-e659db0f16e4
+```
+
+```json
+{
+  "succeeded": true,
+  "message": "Account found: f9a5b170-e84f-11e6-bf01-fe55135034f3",
+  "data": {
+    "account": "payload"
+  }
+}
+```
+
+Get details of given account.
+
+### HTTP request
+
+`GET /api/v1/users/:userIdentifier/accounts/:accountIdentifier`
+
+### URL parameters
+
+Parameter | Type | Description
+--------- | ---- | -----------
+userIdentifier | string | Email or ID of user
+accountIdentifier | string | Identifier or ID of account
+
+## Update account
+
+> Update account:
+
+```http
+PATCH /api/v1/users/fred@bedrock.com/accounts/fred HTTP/1.1
 Accept: application/json
 Authorization: Bearer Y3ItZWNvbW06YTljZTFhMWYtOWI1ZS00ZDllLTkzYjctN2VmMTBmZWRiZDYz
 Content-Type: application/json
@@ -169,7 +208,7 @@ User-Agent: PriceVision/1.0.0
 ```
 
 ```shell
-curl /api/v1/users/fred@bedrock.com/subscription
+curl /api/v1/users/fred@bedrock.com/accounts/fred
   -H "Authorization: Bearer 216fee3f-404d-4663-b32a-dcb765020125"
   -H "Content-Type: application/json"   
   -X PATCH
@@ -187,42 +226,45 @@ X-Request-Id: ea49faf8-f7ad-48fa-b72a-e659db0f16e4
 ```json
 {
   "succeeded": true,
-  "message": "Subscription updated: f5e9dc78-e84f-11e6-bf01-fe55135034f3",
+  "message": "Account updated: f5e9dc78-e84f-11e6-bf01-fe55135034f3",
   "data": {
-    "subscription": "payload"
+    "account": "payload"
   }
 }
 ```
 
-Update an existing subscription. 
+Update an existing account. 
 
 **Notes**  
 At least one body parameter is required.  
-A user can only have one default subscription.
+A subscription can only have one default account.
 
 ### HTTP request
 
-`PATCH /api/v1/users/:userIdentifier/subscription`
+`PATCH /api/v1/users/:userIdentifier/accounts/:accountIdentifier`
 
 ### URL parameters
 
 Parameter | Type | Description
 --------- | ---- | -----------
 userIdentifier | string | Email or ID of user
+accountIdentifier | string | Identifier or ID of account
 
 ### Body parameters
 
 Parameter | Type | Default
 --------- | ---- | -------
-status? | string | null
-default? | boolean | null
+identifier? | string
+name? | string
+status? | string
+default? | boolean
 
-## Delete subscription
+## Delete account
 
-> Delete subscription:
+> Delete account:
 
 ```http
-DELETE /api/v1/users/fred@bedrock.com/subscription HTTP/1.1
+DELETE /api/v1/users/fred@bedrock.com/accounts/fred HTTP/1.1
 Accept: application/json
 Authorization: Bearer Y3ItZWNvbW06YTljZTFhMWYtOWI1ZS00ZDllLTkzYjctN2VmMTBmZWRiZDYz
 Host: id.markettrack.com
@@ -230,7 +272,7 @@ User-Agent: PriceVision/1.0.0
 ```
 
 ```shell
-curl /api/v1/users/fred@bedrock.com/subscription
+curl /api/v1/users/fred@bedrock.com/accounts/fred
   -H "Authorization: Bearer 216fee3f-404d-4663-b32a-dcb765020125"
   -X DELETE
 ```
@@ -246,18 +288,19 @@ X-Request-Id: ea49faf8-f7ad-48fa-b72a-e659db0f16e4
 ```json
 {
   "succeeded": true,
-  "message": "Subscription deleted: f5e9dc78-e84f-11e6-bf01-fe55135034f3"
+  "message": "Account deleted: f5e9dc78-e84f-11e6-bf01-fe55135034f3"
 }
 ```
 
-Delete an existing subscription.
+Delete an existing account.
 
 ### HTTP request
 
-`DELETE /api/v1/users/:userIdentifier/subscription`
+`DELETE /api/v1/users/:userIdentifier/accounts/:accountIdentifier`
 
 ### URL parameters
 
 Parameter | Type | Description
 --------- | ---- | -----------
 userIdentifier | string | Email or ID of user
+accountIdentifier | string | Identifier or ID of account

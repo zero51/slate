@@ -12,6 +12,8 @@ includes:
   - base
   - users
   - subscriptions
+  - accounts
+  - notifications
 
 search: true
 ---
@@ -73,11 +75,26 @@ X-Request-Id: ea49faf8-f7ad-48fa-b72a-e659db0f16e4
 }
 ```
 
-Access tokens are granted at the end of an [OAuth2 client-credentials](https://tools.ietf.org/html/rfc6749#section-4.4) handshake. To request a new token, use [HTTP basic auth](https://tools.ietf.org/html/rfc2617#section-2) with your platform ID and secret to POST to the `/auth/token` endpoint.
+Access tokens are granted at the end of an [OAuth2 client-credentials](https://tools.ietf.org/html/rfc6749#section-4.4) handshake. To request a new token, use [HTTP basic auth](https://tools.ietf.org/html/rfc2617#section-2) with your platform ID and secret to POST to the `/auth/token` endpoint. The `grant_type` body parameter should be set to 'client_credentials'.
+
+`"grant_type": "client_credentials"`
 
 If the token request is valid and authorised, the access token is returned in the JSON body of the response, along with details of its expiry.
 
 Invalid token requests result in a `401` error. If encountered, check the platform credentials that were supplied.
+
+**A note on case**  
+In order to conform to OAuth2 specifications, all request/response parameters specific to authentication are in `snake_case`. This is different to the wider 1MT API convention, where all such parameters are presented in `camelCase`.
+
+### HTTP request
+
+`POST /auth/token`
+
+### Body parameters
+
+Parameter | Type | Default
+--------- | ---- | -------
+grant_type | string
 
 ## Using access tokens
 
@@ -122,6 +139,7 @@ Code | Description
 [403](https://httpstatuses.com/403) | Forbidden: insufficient permissions
 [404](https://httpstatuses.com/404) | Not Found: the requested resource could not be found
 [406](https://httpstatuses.com/406) | Not Acceptable: a format was requested that isn't JSON
+[409](https://httpstatuses.com/409) | Conflict: internal resource state conflict
 [410](https://httpstatuses.com/410) | Gone: the requested resource has been removed
 [415](https://httpstatuses.com/415) | Unsupported Media Type: the request's payload is not JSON
 [422](https://httpstatuses.com/422) | Unprocessable Entity: validation failed
@@ -182,7 +200,7 @@ Set the user agent according to the platform name and current version.
     "fields": [{
       "field": "firstName",
       "value": "null",
-      "msg": "invalid json (required, true)"
+      "error": "invalid json (required, true)"
     }]
   }
 }
@@ -218,6 +236,8 @@ All resource IDs are represented in [UUID](https://en.wikipedia.org/wiki/Univers
 
 ### Timestamps
 
-All timestamps are returned in [ISO8601](https://www.w3.org/TR/NOTE-datetime) format, in UTC, with fields ending in the postfix *_at*...
+All timestamps are returned in [ISO8601](https://www.w3.org/TR/NOTE-datetime) format, in UTC, with fields ending in the postfix **_at** or **At**...
 
-`"created_at": "2016-12-01T00:55:47Z"`
+`"expires_at": "2016-12-01T00:55:47Z"`
+
+`"createdAt": "2016-12-01T00:55:47Z"`
